@@ -1,6 +1,7 @@
 const STORAGE_KEY = "journey-to-yuritsun-progress";
 const KOALA = "🐨";
 const OTTER = "🦦";
+const PLANE = "✈️";
 
 function parseLocalDate(str) {
   const [y, m, d] = str.split("-").map(Number);
@@ -18,6 +19,10 @@ function diffDays(from, to) {
 
 function formatDateJP(date) {
   return (date.getMonth() + 1) + "月" + date.getDate() + "日";
+}
+
+function formatDateShort(date) {
+  return (date.getMonth() + 1) + "/" + date.getDate();
 }
 
 function loadProgress() {
@@ -53,7 +58,7 @@ function scrollToGalleryDay(idx) {
 // the reunion goal (top). The koala marker sits on whichever node currently
 // represents "where we are": the next quiz to play, or the last cleared
 // node while waiting for tomorrow, or the goal once everything is done.
-function renderMap(root, totalDays, completedSet, unlockedCount, currentIndex) {
+function renderMap(root, totalDays, completedSet, unlockedCount, currentIndex, start) {
   root.innerHTML = "";
 
   const allDone = completedSet.size >= totalDays;
@@ -68,6 +73,22 @@ function renderMap(root, totalDays, completedSet, unlockedCount, currentIndex) {
     koalaIndex = -1;
   }
 
+  const dateForIndex = (i) => new Date(start.getTime() + i * 86400000);
+
+  const makeItem = (offset) => {
+    const item = document.createElement("div");
+    item.className = "map-item";
+    item.style.setProperty("--offset", zigzagOffset(offset));
+    return item;
+  };
+
+  const makeDateLabel = (date) => {
+    const label = document.createElement("span");
+    label.className = "map-date";
+    label.textContent = formatDateShort(date);
+    return label;
+  };
+
   for (let i = 0; i < totalDays; i++) {
     const isDone = completedSet.has(i);
     const isLocked = i >= unlockedCount;
@@ -77,7 +98,6 @@ function renderMap(root, totalDays, completedSet, unlockedCount, currentIndex) {
     node.type = "button";
     node.id = "map-node-" + i;
     node.className = "map-node" + (isDone ? " done" : "") + (isLocked ? " locked" : "") + (isKoalaHere ? " current" : "");
-    node.style.setProperty("--offset", zigzagOffset(i));
     node.title = "Day " + (i + 1);
 
     if (isKoalaHere) {
@@ -98,16 +118,22 @@ function renderMap(root, totalDays, completedSet, unlockedCount, currentIndex) {
       node.disabled = true;
     }
 
-    root.appendChild(node);
+    const item = makeItem(i);
+    item.appendChild(node);
+    item.appendChild(makeDateLabel(dateForIndex(i)));
+    root.appendChild(item);
   }
 
   const goal = document.createElement("div");
   goal.id = "map-node-" + totalDays;
   goal.className = "map-node goal" + (allDone ? " goal-reached" : "");
-  goal.style.setProperty("--offset", zigzagOffset(totalDays));
   goal.title = "再会の日";
-  goal.textContent = allDone && koalaIndex === totalDays ? KOALA + OTTER : OTTER;
-  root.appendChild(goal);
+  goal.textContent = allDone && koalaIndex === totalDays ? KOALA + OTTER : PLANE + OTTER;
+
+  const goalItem = makeItem(totalDays);
+  goalItem.appendChild(goal);
+  goalItem.appendChild(makeDateLabel(dateForIndex(totalDays)));
+  root.appendChild(goalItem);
 }
 
 function zigzagOffset(i) {
@@ -167,6 +193,15 @@ function main() {
   document.getElementById("countdown").textContent =
     daysUntilReunion > 0 ? daysUntilReunion + " 日" : "0 日";
 
+  const flightFrom = typeof FLIGHT_FROM !== "undefined" ? FLIGHT_FROM : "🇯🇵";
+  const flightTo = typeof FLIGHT_TO !== "undefined" ? FLIGHT_TO : "🇬🇧";
+  const flightBadge = document.getElementById("flight-badge");
+  if (flightFrom || flightTo) {
+    flightBadge.textContent = [flightFrom, PLANE, flightTo].filter(Boolean).join(" ");
+  } else {
+    flightBadge.hidden = true;
+  }
+
   const progress = loadProgress();
   const completedSet = new Set(progress.completed);
 
@@ -190,7 +225,7 @@ function main() {
     }
   }
 
-  renderMap(document.getElementById("map"), totalDays, completedSet, unlockedCount, currentIndex);
+  renderMap(document.getElementById("map"), totalDays, completedSet, unlockedCount, currentIndex, start);
   renderGallery(document.getElementById("gallery"), progress, totalDays);
   requestAnimationFrame(() => {
     const marker = document.querySelector(".map-node.current");
@@ -259,7 +294,7 @@ function main() {
         break;
       }
     }
-    renderMap(document.getElementById("map"), totalDays, completedSet, unlockedCount, nextIndex);
+    renderMap(document.getElementById("map"), totalDays, completedSet, unlockedCount, nextIndex, start);
     renderGallery(document.getElementById("gallery"), progress, totalDays);
   };
 
