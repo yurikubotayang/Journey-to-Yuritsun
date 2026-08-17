@@ -2,8 +2,8 @@
   --cream: #fdf6ea;
   --cream-deep: #f6ead3;
   --card: #fffaf1;
-  --green: #9cc48c;
-  --green-dark: #74a361;
+  --pink: #f2a0c4;
+  --pink-dark: #dd6a9c;
   --coral: #ef7a72;
   --coral-dark: #e2564c;
   --brown: #8a6f56;
@@ -71,7 +71,7 @@ header {
   overflow-y: auto;
   overflow-x: hidden;
   border-radius: 20px;
-  background: linear-gradient(180deg, #eef6e2, #e2efd2);
+  background: linear-gradient(180deg, #fdeef4, #fbe1ec);
   box-shadow: inset 0 0 0 1px var(--stone-border);
 }
 
@@ -91,7 +91,7 @@ header {
   bottom: 30px;
   left: 50%;
   width: 0;
-  border-left: 4px dashed #cfe3ba;
+  border-left: 4px dashed #f3bfd8;
   transform: translateX(-50%);
   z-index: 0;
 }
@@ -110,14 +110,14 @@ header {
 .day-bubble {
   position: absolute;
   top: -30px;
-  background: var(--green);
+  background: var(--pink);
   color: white;
   font-size: 0.7rem;
   font-weight: bold;
   padding: 3px 10px;
   border-radius: 999px;
   white-space: nowrap;
-  box-shadow: 0 2px 6px rgba(116, 163, 97, 0.4);
+  box-shadow: 0 2px 6px rgba(221, 106, 156, 0.4);
 }
 
 .day-bubble::after {
@@ -127,7 +127,7 @@ header {
   left: 50%;
   transform: translateX(-50%);
   border: 5px solid transparent;
-  border-top-color: var(--green);
+  border-top-color: var(--pink);
 }
 
 .goal-tag {
@@ -163,9 +163,9 @@ header {
 }
 
 .map-node.done {
-  background: var(--green);
+  background: var(--pink);
   color: white;
-  box-shadow: 0 3px 0 var(--green-dark);
+  box-shadow: 0 3px 0 var(--pink-dark);
 }
 
 .map-node.locked {
@@ -264,7 +264,7 @@ header {
 .progress-fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, var(--green), var(--coral));
+  background: linear-gradient(90deg, var(--pink), var(--coral));
   border-radius: 999px;
   transition: width 0.4s ease;
 }
@@ -293,12 +293,12 @@ header {
   padding: 12px;
   border: none;
   border-radius: 999px;
-  background: var(--green);
+  background: var(--pink);
   color: white;
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 3px 0 var(--green-dark);
+  box-shadow: 0 3px 0 var(--pink-dark);
 }
 
 .card {
@@ -338,8 +338,8 @@ header {
 }
 
 .choice-btn:hover {
-  background: #eaf5e2;
-  border-color: var(--green);
+  background: #fdecf4;
+  border-color: var(--pink);
 }
 
 .choice-badge {
@@ -347,7 +347,7 @@ header {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: var(--green);
+  background: var(--pink);
   color: white;
   font-size: 0.75rem;
   display: flex;
@@ -375,11 +375,11 @@ header {
   padding: 10px 20px;
   border: none;
   border-radius: 999px;
-  background: var(--green);
+  background: var(--pink);
   color: white;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 3px 0 var(--green-dark);
+  box-shadow: 0 3px 0 var(--pink-dark);
 }
 
 .feedback {
@@ -390,7 +390,7 @@ header {
 }
 
 .feedback.correct {
-  color: var(--green-dark);
+  color: var(--pink-dark);
 }
 
 .feedback.wrong {
