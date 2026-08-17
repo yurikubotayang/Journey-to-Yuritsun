@@ -16,6 +16,10 @@ function diffDays(from, to) {
   return Math.round((to - from) / 86400000);
 }
 
+function formatDateJP(date) {
+  return (date.getMonth() + 1) + "月" + date.getDate() + "日";
+}
+
 function loadProgress() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -58,8 +62,10 @@ function renderMap(root, totalDays, completedSet, unlockedCount, currentIndex) {
     koalaIndex = currentIndex;
   } else if (allDone) {
     koalaIndex = totalDays;
+  } else if (unlockedCount > 0) {
+    koalaIndex = unlockedCount - 1;
   } else {
-    koalaIndex = Math.max(0, unlockedCount - 1);
+    koalaIndex = -1;
   }
 
   for (let i = 0; i < totalDays; i++) {
@@ -169,10 +175,12 @@ function main() {
   const quizSection = document.getElementById("quiz-section");
   const doneSection = document.getElementById("done-section");
   const reunionSection = document.getElementById("reunion-section");
+  const notStartedSection = document.getElementById("not-started-section");
 
   quizSection.hidden = true;
   doneSection.hidden = true;
   reunionSection.hidden = true;
+  notStartedSection.hidden = true;
 
   let currentIndex = -1;
   for (let i = 0; i < unlockedCount; i++) {
@@ -193,6 +201,13 @@ function main() {
     reunionSection.hidden = false;
     document.getElementById("reunion-title").textContent = REUNION_TITLE;
     document.getElementById("reunion-message").textContent = REUNION_MESSAGE;
+    return;
+  }
+
+  if (unlockedCount === 0) {
+    notStartedSection.hidden = false;
+    document.getElementById("not-started-message").textContent =
+      formatDateJP(start) + " からスタートするよ。楽しみに待っててね 🐨";
     return;
   }
 
