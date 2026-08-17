@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Journey to Yuritsun</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1 id="title">Journey to Yuritsun</h1>
+      <div class="date-range" id="date-range"></div>
+      <div class="flight-badge" id="flight-badge"></div>
+    </header>
+
+    <div class="map-wrap">
+      <div id="map"></div>
+    </div>
+
+    <section class="status-card">
+      <div class="status-day">
+        DAY <span id="status-day-current">-</span>
+        <span class="status-day-total">/ <span id="status-day-total">-</span></span>
+      </div>
+
+      <div class="status-countdown">
+        <span class="status-countdown-num" id="status-countdown-num">-</span>
+        <span class="status-countdown-unit">日</span>
+      </div>
+      <div class="status-countdown-label" id="status-countdown-label"></div>
+
+      <div class="progress-track">
+        <span class="progress-avatar">🐨</span>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        <span class="progress-avatar">🦦</span>
+      </div>
+
+      <div class="mission-box" id="mission-box">
+        <div class="mission-title" id="mission-title"></div>
+        <p class="mission-text" id="mission-text"></p>
+        <button type="button" class="mission-btn" id="mission-btn" hidden>クイズをはじめる</button>
+      </div>
+    </section>
+
+    <div id="lesson-panel">
+      <section id="quiz-section" class="card" hidden>
+        <div id="day-label"></div>
+        <p id="question"></p>
+        <div id="answer-area"></div>
+        <p id="feedback" class="feedback"></p>
+
+        <div id="reveal" hidden>
+          <div id="reveal-photo"></div>
+          <p id="reveal-message"></p>
+        </div>
+      </section>
+
+      <section id="not-started-section" class="card" hidden>
+        <p id="not-started-message" class="done-text"></p>
+      </section>
+
+      <section id="done-section" class="card" hidden>
+        <p class="done-text">今日の分はクリア済み！また明日ね 💌</p>
+      </section>
+
+      <section id="reunion-section" class="card" hidden>
+        <div class="bunting">🎉 🎊 🎉 🎊 🎉</div>
+        <h2 id="reunion-title"></h2>
+        <p id="reunion-message" class="reunion-text"></p>
+      </section>
+    </div>
+
+    <section class="gallery-section">
+      <h2>これまでの思い出</h2>
+      <div id="gallery"></div>
+    </section>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
