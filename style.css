@@ -48,29 +48,94 @@ header {
   color: var(--pink-dark);
 }
 
-.path-wrap {
-  overflow-x: auto;
-  padding: 12px 4px;
+.map-wrap {
+  max-height: 60vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #fff0f5, #ffe6ee);
+  box-shadow: inset 0 0 0 1px #ffd6e3;
 }
 
-#path {
+#map {
   display: flex;
-  gap: 6px;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 26px;
+  padding: 36px 0;
+  position: relative;
 }
 
-.step {
-  flex: 0 0 20px;
-  height: 20px;
+#map::before {
+  content: "";
+  position: absolute;
+  top: 30px;
+  bottom: 30px;
+  left: 50%;
+  width: 0;
+  border-left: 3px dashed #ffc3d6;
+  transform: translateX(-50%);
+  z-index: 0;
+}
+
+.map-node {
+  --offset: 0px;
+  transform: translateX(var(--offset));
+  z-index: 1;
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
-  background: #ffe0e9;
+  border: none;
+  background: white;
+  color: var(--muted);
+  font-size: 1.1rem;
+  font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  box-shadow: 0 3px 8px rgba(232, 93, 138, 0.18);
+  cursor: pointer;
 }
 
-.step-done {
+.map-node.done {
   background: var(--pink);
+  color: white;
+}
+
+.map-node.locked {
+  background: #f3e6ea;
+  color: #d8b9c4;
+  cursor: default;
+  box-shadow: none;
+}
+
+.map-node.current {
+  width: 62px;
+  height: 62px;
+  font-size: 1.8rem;
+  background: white;
+  box-shadow: 0 0 0 4px var(--pink), 0 4px 14px rgba(232, 93, 138, 0.35);
+  animation: bounce 1.6s ease-in-out infinite;
+}
+
+.map-node.goal {
+  width: 68px;
+  height: 68px;
+  font-size: 2rem;
+  background: #fff2b8;
+  box-shadow: 0 3px 10px rgba(232, 93, 138, 0.18);
+  cursor: default;
+}
+
+.map-node.goal-reached {
+  background: #ffe58a;
+  box-shadow: 0 0 0 4px #ffd15c, 0 4px 14px rgba(232, 93, 138, 0.35);
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateX(var(--offset)) translateY(0); }
+  50% { transform: translateX(var(--offset)) translateY(-8px); }
 }
 
 .card {

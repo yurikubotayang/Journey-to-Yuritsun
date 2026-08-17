@@ -1,4 +1,6 @@
 const STORAGE_KEY = "journey-to-yuritsun-progress";
+const KOALA = "🐨";
+const OTTER = "🦦";
 
 function parseLocalDate(str) {
   const [y, m, d] = str.split("-").map(Number);
@@ -34,14 +36,76 @@ function checkAnswer(quiz, given) {
   return String(given).trim().toLowerCase() === String(quiz.answer).trim().toLowerCase();
 }
 
-function renderPath(root, totalDays, completedCount) {
+function scrollToLesson() {
+  document.getElementById("lesson-panel").scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+function scrollToGalleryDay(idx) {
+  const el = document.getElementById("gallery-day-" + idx);
+  if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+// Builds the Duolingo-style winding path from today's start (bottom) up to
+// the reunion goal (top). The koala marker sits on whichever node currently
+// represents "where we are": the next quiz to play, or the last cleared
+// node while waiting for tomorrow, or the goal once everything is done.
+function renderMap(root, totalDays, completedSet, unlockedCount, currentIndex) {
   root.innerHTML = "";
-  for (let i = 0; i < totalDays; i++) {
-    const step = document.createElement("div");
-    step.className = "step" + (i < completedCount ? " step-done" : "");
-    step.textContent = i < completedCount ? "❤" : "";
-    root.appendChild(step);
+
+  const allDone = completedSet.size >= totalDays;
+  let koalaIndex;
+  if (currentIndex !== -1) {
+    koalaIndex = currentIndex;
+  } else if (allDone) {
+    koalaIndex = totalDays;
+  } else {
+    koalaIndex = Math.max(0, unlockedCount - 1);
   }
+
+  for (let i = 0; i < totalDays; i++) {
+    const isDone = completedSet.has(i);
+    const isLocked = i >= unlockedCount;
+    const isKoalaHere = i === koalaIndex;
+
+    const node = document.createElement("button");
+    node.type = "button";
+    node.id = "map-node-" + i;
+    node.className = "map-node" + (isDone ? " done" : "") + (isLocked ? " locked" : "") + (isKoalaHere ? " current" : "");
+    node.style.setProperty("--offset", zigzagOffset(i));
+    node.title = "Day " + (i + 1);
+
+    if (isKoalaHere) {
+      node.textContent = KOALA;
+    } else if (isDone) {
+      node.textContent = "✓";
+    } else if (isLocked) {
+      node.textContent = "🔒";
+    } else {
+      node.textContent = String(i + 1);
+    }
+
+    if (isDone) {
+      node.onclick = () => scrollToGalleryDay(i);
+    } else if (!isLocked) {
+      node.onclick = scrollToLesson;
+    } else {
+      node.disabled = true;
+    }
+
+    root.appendChild(node);
+  }
+
+  const goal = document.createElement("div");
+  goal.id = "map-node-" + totalDays;
+  goal.className = "map-node goal" + (allDone ? " goal-reached" : "");
+  goal.style.setProperty("--offset", zigzagOffset(totalDays));
+  goal.title = "再会の日";
+  goal.textContent = allDone && koalaIndex === totalDays ? KOALA + OTTER : OTTER;
+  root.appendChild(goal);
+}
+
+function zigzagOffset(i) {
+  return Math.round(Math.sin(i * 0.9) * 70) + "px";
 }
 
 function renderGallery(root, progress, totalDays) {
@@ -51,6 +115,7 @@ function renderGallery(root, progress, totalDays) {
     const msg = MESSAGES[idx % MESSAGES.length];
     const card = document.createElement("div");
     card.className = "gallery-card";
+    card.id = "gallery-day-" + idx;
 
     if (PHOTOS.length > 0) {
       const img = document.createElement("img");
@@ -101,9 +166,6 @@ function main() {
 
   const unlockedCount = Math.min(totalDays, Math.max(0, diffDays(start, today) + 1));
 
-  renderPath(document.getElementById("path"), totalDays, completedSet.size);
-  renderGallery(document.getElementById("gallery"), progress, totalDays);
-
   const quizSection = document.getElementById("quiz-section");
   const doneSection = document.getElementById("done-section");
   const reunionSection = document.getElementById("reunion-section");
@@ -112,19 +174,26 @@ function main() {
   doneSection.hidden = true;
   reunionSection.hidden = true;
 
-  if (daysUntilReunion <= 0 && completedSet.size >= totalDays) {
-    reunionSection.hidden = false;
-    document.getElementById("reunion-title").textContent = REUNION_TITLE;
-    document.getElementById("reunion-message").textContent = REUNION_MESSAGE;
-    return;
-  }
-
   let currentIndex = -1;
   for (let i = 0; i < unlockedCount; i++) {
     if (!completedSet.has(i)) {
       currentIndex = i;
       break;
     }
+  }
+
+  renderMap(document.getElementById("map"), totalDays, completedSet, unlockedCount, currentIndex);
+  renderGallery(document.getElementById("gallery"), progress, totalDays);
+  requestAnimationFrame(() => {
+    const marker = document.querySelector(".map-node.current");
+    if (marker) marker.scrollIntoView({ block: "center" });
+  });
+
+  if (daysUntilReunion <= 0 && completedSet.size >= totalDays) {
+    reunionSection.hidden = false;
+    document.getElementById("reunion-title").textContent = REUNION_TITLE;
+    document.getElementById("reunion-message").textContent = REUNION_MESSAGE;
+    return;
   }
 
   if (currentIndex === -1) {
@@ -167,7 +236,15 @@ function main() {
     feedback.textContent = "正解！🎉";
     feedback.className = "feedback correct";
     revealDay(currentIndex);
-    renderPath(document.getElementById("path"), totalDays, completedSet.size);
+
+    let nextIndex = -1;
+    for (let i = 0; i < unlockedCount; i++) {
+      if (!completedSet.has(i)) {
+        nextIndex = i;
+        break;
+      }
+    }
+    renderMap(document.getElementById("map"), totalDays, completedSet, unlockedCount, nextIndex);
     renderGallery(document.getElementById("gallery"), progress, totalDays);
   };
 
