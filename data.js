@@ -3,27 +3,36 @@
 // ========================================================================
 
 // ゲームを開始する日（この日から1日1問アンロックされます）"YYYY-MM-DD"
-const START_DATE = "2026-08-17";
+const START_DATE = "2026-09-09";
 
 // 再会する日 "YYYY-MM-DD"
-const REUNION_DATE = "2026-12-25";
+const REUNION_DATE = "2026-11-11";
 
 // タイトルと再会メッセージ
 const GAME_TITLE = "Journey to Yuritsun";
-const REUNION_TITLE = "おかえりなさい 🎉";
-const REUNION_MESSAGE = "ついにこの日が来たね。毎日ここまで一緒に歩いてくれてありがとう。会えるのを楽しみにしてる。";
+const REUNION_TITLE = "再開の日！！🐨🦦";
+const REUNION_MESSAGE = "ついに久しぶりの再会だね！ロンドンへようこそ！会えるの楽しみにしてる(⋈◍＞◡＜◍)。✧♡";
 
 // クイズ（好きなだけ追加OK。日数より少なければ繰り返し使われます）
 // choices を書けば選択式、書かなければ自由記述（answer と部分一致でOK）
 const QUIZZES = [
   {
-    question: "私たちが初めて出会った場所は？",
-    choices: ["学校", "職場", "友達の紹介", "旅行先"],
-    answer: 0,
+    question: "ゆりたちが初めて出会った場所は？",
+    choices: ["慶応", "ICU, "セラビ", "渋谷のよくわからない居酒屋"],
+    answer: 3,
   },
   {
-    question: "私の好きな食べ物は次のうちどれ？",
-    choices: ["ラーメン", "寿司", "カレー", "全部"],
+    question: "ゆりの好きな食べ物は次のうちどれ？",
+    choices: ["中華", "お寿司", "FFF", "全部"],
+    answer: 4,
+  },
+  {
+    question: "ゆりたちが最初に一緒に見た映画は？（自由記述）",
+    answer: "ジュラシックワールド（だよね？）",
+  },
+  {
+    question: "ゆり「ぴょん」の名付け親は？",
+    choices: ["りなつん", "ことな", "中澤", "かえちゃん"],
     answer: 3,
   },
   {
