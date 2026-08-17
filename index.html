@@ -10,13 +10,38 @@
   <div class="app">
     <header>
       <h1 id="title">Journey to Yuritsun</h1>
-      <div class="countdown-box">再会まであと <span id="countdown">-</span></div>
+      <div class="date-range" id="date-range"></div>
       <div class="flight-badge" id="flight-badge"></div>
     </header>
 
     <div class="map-wrap">
       <div id="map"></div>
     </div>
+
+    <section class="status-card">
+      <div class="status-day">
+        DAY <span id="status-day-current">-</span>
+        <span class="status-day-total">/ <span id="status-day-total">-</span></span>
+      </div>
+
+      <div class="status-countdown">
+        <span class="status-countdown-num" id="status-countdown-num">-</span>
+        <span class="status-countdown-unit">日</span>
+      </div>
+      <div class="status-countdown-label" id="status-countdown-label"></div>
+
+      <div class="progress-track">
+        <span class="progress-avatar">🐨</span>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        <span class="progress-avatar">🦦</span>
+      </div>
+
+      <div class="mission-box" id="mission-box">
+        <div class="mission-title" id="mission-title"></div>
+        <p class="mission-text" id="mission-text"></p>
+        <button type="button" class="mission-btn" id="mission-btn" hidden>クイズをはじめる</button>
+      </div>
+    </section>
 
     <div id="lesson-panel">
       <section id="quiz-section" class="card" hidden>
@@ -40,6 +65,7 @@
       </section>
 
       <section id="reunion-section" class="card" hidden>
+        <div class="bunting">🎉 🎊 🎉 🎊 🎉</div>
         <h2 id="reunion-title"></h2>
         <p id="reunion-message" class="reunion-text"></p>
       </section>

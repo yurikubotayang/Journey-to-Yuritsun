@@ -2,6 +2,7 @@ const STORAGE_KEY = "journey-to-yuritsun-progress";
 const KOALA = "🐨";
 const OTTER = "🦦";
 const PLANE = "✈️";
+const CIRCLED_NUMBERS = ["①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"];
 
 function parseLocalDate(str) {
   const [y, m, d] = str.split("-").map(Number);
@@ -22,7 +23,7 @@ function formatDateJP(date) {
 }
 
 function formatDateShort(date) {
-  return (date.getMonth() + 1) + "/" + date.getDate();
+  return (date.getMonth() + 1) + "." + date.getDate();
 }
 
 function loadProgress() {
@@ -54,7 +55,7 @@ function scrollToGalleryDay(idx) {
   if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
-// Builds the Duolingo-style winding path from today's start (bottom) up to
+// Builds the winding stepping-stone path from today's start (bottom) up to
 // the reunion goal (top). The koala marker sits on whichever node currently
 // represents "where we are": the next quiz to play, or the last cleared
 // node while waiting for tomorrow, or the goal once everything is done.
@@ -104,8 +105,6 @@ function renderMap(root, totalDays, completedSet, unlockedCount, currentIndex, s
       node.textContent = KOALA;
     } else if (isDone) {
       node.textContent = "✓";
-    } else if (isLocked) {
-      node.textContent = "🔒";
     } else {
       node.textContent = String(i + 1);
     }
@@ -119,6 +118,12 @@ function renderMap(root, totalDays, completedSet, unlockedCount, currentIndex, s
     }
 
     const item = makeItem(i);
+    if (isKoalaHere && !allDone) {
+      const bubble = document.createElement("div");
+      bubble.className = "day-bubble";
+      bubble.textContent = "DAY " + (i + 1);
+      item.appendChild(bubble);
+    }
     item.appendChild(node);
     item.appendChild(makeDateLabel(dateForIndex(i)));
     root.appendChild(item);
@@ -131,6 +136,10 @@ function renderMap(root, totalDays, completedSet, unlockedCount, currentIndex, s
   goal.textContent = allDone && koalaIndex === totalDays ? KOALA + OTTER : PLANE + OTTER;
 
   const goalItem = makeItem(totalDays);
+  const goalTag = document.createElement("div");
+  goalTag.className = "goal-tag";
+  goalTag.textContent = "GOAL!";
+  goalItem.appendChild(goalTag);
   goalItem.appendChild(goal);
   goalItem.appendChild(makeDateLabel(dateForIndex(totalDays)));
   root.appendChild(goalItem);
@@ -188,10 +197,14 @@ function main() {
   const totalDays = Math.max(1, diffDays(start, reunion));
 
   document.getElementById("title").textContent = GAME_TITLE;
+  document.getElementById("date-range").textContent =
+    formatDateShort(start) + "  →  " + formatDateShort(reunion);
 
   const daysUntilReunion = diffDays(today, reunion);
-  document.getElementById("countdown").textContent =
-    daysUntilReunion > 0 ? daysUntilReunion + " 日" : "0 日";
+
+  const reunionLabel = typeof REUNION_LABEL !== "undefined" ? REUNION_LABEL : "再会まで♡";
+  document.getElementById("status-countdown-num").textContent = daysUntilReunion > 0 ? daysUntilReunion : 0;
+  document.getElementById("status-countdown-label").textContent = reunionLabel;
 
   const flightFrom = typeof FLIGHT_FROM !== "undefined" ? FLIGHT_FROM : "🇯🇵";
   const flightTo = typeof FLIGHT_TO !== "undefined" ? FLIGHT_TO : "🇬🇧";
@@ -211,11 +224,17 @@ function main() {
   const doneSection = document.getElementById("done-section");
   const reunionSection = document.getElementById("reunion-section");
   const notStartedSection = document.getElementById("not-started-section");
+  const missionBox = document.getElementById("mission-box");
+  const missionTitle = document.getElementById("mission-title");
+  const missionText = document.getElementById("mission-text");
+  const missionBtn = document.getElementById("mission-btn");
 
   quizSection.hidden = true;
   doneSection.hidden = true;
   reunionSection.hidden = true;
   notStartedSection.hidden = true;
+  missionBox.hidden = false;
+  missionBtn.hidden = true;
 
   let currentIndex = -1;
   for (let i = 0; i < unlockedCount; i++) {
@@ -232,8 +251,17 @@ function main() {
     if (marker) marker.scrollIntoView({ block: "center" });
   });
 
+  const displayDay = currentIndex !== -1
+    ? currentIndex + 1
+    : Math.max(1, Math.min(unlockedCount, totalDays));
+  document.getElementById("status-day-current").textContent = displayDay;
+  document.getElementById("status-day-total").textContent = totalDays;
+  document.getElementById("progress-fill").style.width =
+    Math.round((completedSet.size / totalDays) * 100) + "%";
+
   if (daysUntilReunion <= 0 && completedSet.size >= totalDays) {
     reunionSection.hidden = false;
+    missionBox.hidden = true;
     document.getElementById("reunion-title").textContent = REUNION_TITLE;
     document.getElementById("reunion-message").textContent = REUNION_MESSAGE;
     return;
@@ -241,17 +269,26 @@ function main() {
 
   if (unlockedCount === 0) {
     notStartedSection.hidden = false;
-    document.getElementById("not-started-message").textContent =
-      formatDateJP(start) + " からスタートするよ。楽しみに待っててね 🐨";
+    const startMsg = formatDateJP(start) + " からスタートするよ。楽しみに待っててね 🐨";
+    document.getElementById("not-started-message").textContent = startMsg;
+    missionTitle.textContent = "はじまるまで";
+    missionText.textContent = startMsg;
     return;
   }
 
   if (currentIndex === -1) {
     doneSection.hidden = false;
+    missionTitle.textContent = "おつかれさま！";
+    missionText.textContent = "今日の分はクリア済み。また明日ね 💌";
     return;
   }
 
   quizSection.hidden = false;
+  missionTitle.textContent = "今日のミッション";
+  missionText.textContent = "クイズを解いて1マス進もう！";
+  missionBtn.hidden = false;
+  missionBtn.onclick = scrollToLesson;
+
   const quiz = QUIZZES[currentIndex % QUIZZES.length];
 
   document.getElementById("day-label").textContent = "Day " + (currentIndex + 1) + " / " + totalDays;
@@ -283,7 +320,7 @@ function main() {
     completedSet.add(currentIndex);
     progress.completed = [...completedSet];
     saveProgress(progress);
-    feedback.textContent = "正解！🎉";
+    feedback.textContent = "正解！🎉 1マス進んだよ！";
     feedback.className = "feedback correct";
     revealDay(currentIndex);
 
@@ -296,6 +333,8 @@ function main() {
     }
     renderMap(document.getElementById("map"), totalDays, completedSet, unlockedCount, nextIndex, start);
     renderGallery(document.getElementById("gallery"), progress, totalDays);
+    document.getElementById("progress-fill").style.width =
+      Math.round((completedSet.size / totalDays) * 100) + "%";
   };
 
   const onWrong = () => {
@@ -307,7 +346,17 @@ function main() {
     quiz.choices.forEach((choice, i) => {
       const btn = document.createElement("button");
       btn.className = "choice-btn";
-      btn.textContent = choice;
+
+      const badge = document.createElement("span");
+      badge.className = "choice-badge";
+      badge.textContent = CIRCLED_NUMBERS[i] || String(i + 1);
+
+      const label = document.createElement("span");
+      label.className = "choice-label";
+      label.textContent = choice;
+
+      btn.appendChild(badge);
+      btn.appendChild(label);
       btn.onclick = () => {
         if (checkAnswer(quiz, i)) onCorrect();
         else onWrong();
