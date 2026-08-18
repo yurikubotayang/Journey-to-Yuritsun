@@ -197,6 +197,7 @@ function main() {
   const totalDays = Math.max(1, diffDays(start, reunion));
 
   document.getElementById("title").textContent = GAME_TITLE;
+  document.title = GAME_TITLE;
   document.getElementById("date-range").textContent =
     formatDateShort(start) + "  →  " + formatDateShort(reunion);
 
