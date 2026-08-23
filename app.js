@@ -197,6 +197,7 @@ function main() {
   const totalDays = Math.max(1, diffDays(start, reunion));
 
   document.getElementById("title").textContent = GAME_TITLE;
+  document.title = GAME_TITLE;
   document.getElementById("date-range").textContent =
     formatDateShort(start) + "  →  " + formatDateShort(reunion);
 
@@ -335,6 +336,10 @@ function main() {
     renderGallery(document.getElementById("gallery"), progress, totalDays);
     document.getElementById("progress-fill").style.width =
       Math.round((completedSet.size / totalDays) * 100) + "%";
+    const newDisplayDay = nextIndex !== -1
+      ? nextIndex + 1
+      : Math.max(1, Math.min(unlockedCount, totalDays));
+    document.getElementById("status-day-current").textContent = newDisplayDay;
   };
 
   const onWrong = () => {
