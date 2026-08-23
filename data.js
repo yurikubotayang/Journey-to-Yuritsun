@@ -144,7 +144,7 @@ const MESSAGES = [
   "一人で寂しくて泣いてない？😣ゆりつんとたくさんおしゃべりしようね！",
   "ゆりつんにイラッ！とすることがあっても一回抑えて考えるんだよ！",
   "ゆりつんはお腹が空きました",
-  "i love you so much!! can't wait to see you soon <3]",
+  "i love you so much!! can't wait to see you soon <3",
 ];
 
 // 写真のファイル名（photos フォルダに入れてください。日数より少なければ繰り返し使われます）
