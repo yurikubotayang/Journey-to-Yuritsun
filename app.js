@@ -317,12 +317,12 @@ function main() {
     answerArea.hidden = true;
   };
 
-  const onCorrect = () => {
+  const completeDay = (feedbackText, feedbackClass) => {
     completedSet.add(currentIndex);
     progress.completed = [...completedSet];
     saveProgress(progress);
-    feedback.textContent = "正解！🎉 1マス進んだよ！";
-    feedback.className = "feedback correct";
+    feedback.textContent = feedbackText;
+    feedback.className = "feedback " + feedbackClass;
     revealDay(currentIndex);
 
     let nextIndex = -1;
@@ -342,8 +342,22 @@ function main() {
     document.getElementById("status-day-current").textContent = newDisplayDay;
   };
 
+  const onCorrect = () => completeDay("正解！🎉 1マス進んだよ！", "correct");
+
+  const failMessage = typeof FAIL_MESSAGE !== "undefined"
+    ? FAIL_MESSAGE
+    : "failed…！でも今日のメッセージと写真はあげるよ 😂";
+  const onFail = () => completeDay(failMessage, "wrong");
+
+  const ATTEMPTS_ALLOWED = 2;
+  let attempts = 0;
   const onWrong = () => {
-    feedback.textContent = "おしい、もう一度考えてみて！";
+    attempts++;
+    if (attempts >= ATTEMPTS_ALLOWED) {
+      onFail();
+      return;
+    }
+    feedback.textContent = "おしい、もう一度考えてみて！（あと " + (ATTEMPTS_ALLOWED - attempts) + " 回）";
     feedback.className = "feedback wrong";
   };
 
