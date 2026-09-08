@@ -162,8 +162,46 @@ const QUIZZES = [
     choices: ["笑った時の大きな口", "唇のホクロ", "口角つん", "涙袋"],
     answer: 0,
   },
-
-
+  {
+    question: "ゆりつんがhighschoolで一番好きだった科目は？",
+    choices: ["geography", "algebra", "P.E.", "Sociology"],
+    answer: 3,
+  },
+  {
+    question: "ママのバーでひなの前歯に抹茶がついて歯抜けみたいになってたのはいつ？",
+    choices: ["8月2日", "8月3日", "8月6日", "8月12日"],
+    answer: 0,
+  },
+  {
+    question: "べべつんの悪い癖はどれ？",
+    choices: ["歯を磨かないこと", "お酒弱いところ", "お風呂入らないところ", "全部"],
+    answer: 3,
+  },
+  {
+    question: "ゆりつんが卒業したhighschoolの名前は？",
+    choices: ["KIS", "YISS", "KKFS", "SIS"],
+    answer: 2,
+  },
+  {
+    question: "ゆりつんのバイブルのドラマは？",
+    choices: ["Desperate Housewives", "The Office", "Modern Family", "Sex and the City"],
+    answer: 3,
+  },
+  {
+    question: "ゆりつんが自分自身で治したいと思っているところは？",
+    choices: ["可愛すぎるところ", "愛嬌がありすぎるところ", "ごくたまにタイムマネジメントがうまくいかないところ", "肌がもちもちで柔らかいところ"],
+    answer: 2,
+  },
+  {
+    question: "ゆりつんがキュンとしてしまったべべの動作は？",
+    choices: ["正座中のチラ見", "笑い号泣", "お経", "ぜーーーーーんぶ"],
+    answer: 3,
+  },
+  {
+    question: "コーヒーとパンくださいは韓国語で？",
+    choices: ["카피랑 빵 주세요", "커피랑 빵 주세요", "코삐랑 빵 주세오", "커삐랑 빨주세요"],
+    answer: 1,
+  },
 ];
 
 // メッセージ（日数より少なければ繰り返し使われます）
