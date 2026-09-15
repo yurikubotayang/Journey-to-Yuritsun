@@ -344,10 +344,11 @@ function main() {
 
   const onCorrect = () => completeDay("正解！🎉 1マス進んだよ！", "correct");
 
+  const answerText = Array.isArray(quiz.choices) ? quiz.choices[quiz.answer] : quiz.answer;
   const failMessage = typeof FAIL_MESSAGE !== "undefined"
     ? FAIL_MESSAGE
     : "failed…！でも今日のメッセージと写真はあげるよ 😂";
-  const onFail = () => completeDay(failMessage, "wrong");
+  const onFail = () => completeDay(failMessage + "（正解は「" + answerText + "」だったよ！）", "wrong");
 
   const ATTEMPTS_ALLOWED = 2;
   let attempts = 0;
