@@ -173,11 +173,26 @@ function renderGallery(root, progress, totalDays) {
     const label = document.createElement("div");
     label.className = "gallery-day";
     label.textContent = "Day " + (idx + 1);
+
+    const quiz = QUIZZES[idx % QUIZZES.length];
+    const quizAnswer = Array.isArray(quiz.choices) ? quiz.choices[quiz.answer] : quiz.answer;
+    const quizBox = document.createElement("div");
+    quizBox.className = "gallery-quiz";
+    const quizQ = document.createElement("p");
+    quizQ.className = "gallery-quiz-question";
+    quizQ.textContent = "Q. " + quiz.question;
+    const quizA = document.createElement("p");
+    quizA.className = "gallery-quiz-answer";
+    quizA.textContent = "A. " + quizAnswer;
+    quizBox.appendChild(quizQ);
+    quizBox.appendChild(quizA);
+
     const text = document.createElement("p");
     text.className = "gallery-message";
     text.textContent = msg;
 
     card.appendChild(label);
+    card.appendChild(quizBox);
     card.appendChild(text);
     root.appendChild(card);
   }

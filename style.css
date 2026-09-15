@@ -484,3 +484,24 @@ header {
   font-size: 0.8rem;
   margin: 4px 0 0;
 }
+
+.gallery-quiz {
+  margin-top: 4px;
+  padding: 6px 8px;
+  background: var(--cream);
+  border-radius: 8px;
+}
+
+.gallery-quiz-question {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+}
+
+.gallery-quiz-answer {
+  font-size: 0.72rem;
+  color: var(--pink-dark);
+  font-weight: 700;
+  margin: 2px 0 0;
+}
