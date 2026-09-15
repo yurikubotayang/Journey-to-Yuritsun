@@ -187,6 +187,15 @@ function renderGallery(root, progress, totalDays) {
     quizBox.appendChild(quizQ);
     quizBox.appendChild(quizA);
 
+    const givenText = progress.answers && progress.answers[idx];
+    if (givenText !== undefined && givenText !== null && givenText !== "") {
+      const wasCorrect = String(givenText).trim().toLowerCase() === String(quizAnswer).trim().toLowerCase();
+      const quizGiven = document.createElement("p");
+      quizGiven.className = "gallery-quiz-given" + (wasCorrect ? " correct" : " wrong");
+      quizGiven.textContent = "あなたの回答: " + givenText;
+      quizBox.appendChild(quizGiven);
+    }
+
     const text = document.createElement("p");
     text.className = "gallery-message";
     text.textContent = msg;
@@ -332,9 +341,11 @@ function main() {
     answerArea.hidden = true;
   };
 
-  const completeDay = (feedbackText, feedbackClass) => {
+  const completeDay = (feedbackText, feedbackClass, givenText) => {
     completedSet.add(currentIndex);
     progress.completed = [...completedSet];
+    progress.answers = progress.answers || {};
+    progress.answers[currentIndex] = givenText;
     saveProgress(progress);
     feedback.textContent = feedbackText;
     feedback.className = "feedback " + feedbackClass;
@@ -357,20 +368,20 @@ function main() {
     document.getElementById("status-day-current").textContent = newDisplayDay;
   };
 
-  const onCorrect = () => completeDay("正解！🎉 1マス進んだよ！", "correct");
+  const onCorrect = (givenText) => completeDay("正解！🎉 1マス進んだよ！", "correct", givenText);
 
   const answerText = Array.isArray(quiz.choices) ? quiz.choices[quiz.answer] : quiz.answer;
   const failMessage = typeof FAIL_MESSAGE !== "undefined"
     ? FAIL_MESSAGE
     : "failed…！でも今日のメッセージと写真はあげるよ 😂";
-  const onFail = () => completeDay(failMessage + "（正解は「" + answerText + "」だったよ！）", "wrong");
+  const onFail = (givenText) => completeDay(failMessage + "（正解は「" + answerText + "」だったよ！）", "wrong", givenText);
 
   const ATTEMPTS_ALLOWED = 2;
   let attempts = 0;
-  const onWrong = () => {
+  const onWrong = (givenText) => {
     attempts++;
     if (attempts >= ATTEMPTS_ALLOWED) {
-      onFail();
+      onFail(givenText);
       return;
     }
     feedback.textContent = "おしい、もう一度考えてみて！（あと " + (ATTEMPTS_ALLOWED - attempts) + " 回）";
@@ -393,8 +404,8 @@ function main() {
       btn.appendChild(badge);
       btn.appendChild(label);
       btn.onclick = () => {
-        if (checkAnswer(quiz, i)) onCorrect();
-        else onWrong();
+        if (checkAnswer(quiz, i)) onCorrect(choice);
+        else onWrong(choice);
       };
       answerArea.appendChild(btn);
     });
@@ -411,8 +422,8 @@ function main() {
     form.appendChild(submit);
     form.onsubmit = (e) => {
       e.preventDefault();
-      if (checkAnswer(quiz, input.value)) onCorrect();
-      else onWrong();
+      if (checkAnswer(quiz, input.value)) onCorrect(input.value);
+      else onWrong(input.value);
     };
     answerArea.appendChild(form);
   }

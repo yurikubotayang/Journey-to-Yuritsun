@@ -505,3 +505,17 @@ header {
   font-weight: 700;
   margin: 2px 0 0;
 }
+
+.gallery-quiz-given {
+  font-size: 0.72rem;
+  font-weight: 600;
+  margin: 2px 0 0;
+}
+
+.gallery-quiz-given.correct {
+  color: var(--brown);
+}
+
+.gallery-quiz-given.wrong {
+  color: var(--coral-dark);
+}
